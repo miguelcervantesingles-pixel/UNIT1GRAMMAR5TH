@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ADVENTURE CAMP — By Teacher Lizbeth Garay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#f5c542; --gold2:#ffdf7e; --purple:#6d3bb5; --grn:#5ee06b; --red:#ff6b81;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;color:#fff;overflow-x:hidden;min-height:100vh;
+    background:radial-gradient(circle at 50% 0%,#311260 0%,#1a0a38 55%,#0a0317 100%);
+    padding:14px 12px clamp(90px,16vh,140px) 12px;
+    -webkit-user-select:none;user-select:none;
+  }
+  .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .moon{position:absolute;top:24px;right:26px;width:clamp(70px,12vw,120px);height:clamp(70px,12vw,120px);
+    border-radius:50%;background:radial-gradient(circle at 38% 38%,#fff8d5,#ffe28a 60%,#f4c55a);
+    box-shadow:0 0 40px 14px rgba(255,226,138,.55),0 0 90px 40px rgba(255,226,138,.22);}
+  .moon .crater{position:absolute;border-radius:50%;background:rgba(200,150,60,.45);}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--dur,2.8s) ease-in-out infinite;}
+  .witch{position:absolute;font-size:clamp(22px,4vw,40px);opacity:.85;animation:fly var(--dur,14s) linear infinite;}
+  .fire{position:absolute;font-size:clamp(16px,2.6vw,26px);opacity:.85;animation:burn var(--dur,3.2s) ease-in-out infinite;}
+  .wand{position:absolute;font-size:clamp(20px,3vw,34px);opacity:.5;
+    animation:twinkle var(--dur,3.6s) ease-in-out infinite;}
+  @keyframes fly{from{transform:translateX(105vw)}to{transform:translateX(-10vw)}}
+  @keyframes twinkle{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+  @keyframes burn{0%,100%{transform:scale(.85) rotate(-4deg);opacity:.7}50%{transform:scale(1.15) rotate(4deg);opacity:1}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes ltrPop{from{opacity:0;transform:translateY(-16px) scale(.5)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+  @keyframes ris{0%{transform:translateY(0) scale(.5);opacity:0}20%{opacity:1}100%{transform:translateY(-60px);opacity:0}}
+  .wrap{position:relative;z-index:2;max-width:760px;margin:0 auto;}
+  .screen{display:none;animation:fadeIn .4s ease both;}
+  .screen.on{display:block;}
+  .center{text-align:center;}
+  .titles{padding-top:6px;}
+  .h-title{
+    font-family:'Cinzel',serif;font-size:clamp(1.5rem,6.4vw,2.7rem);line-height:1.12;margin:0;
+    text-align:center;letter-spacing:2px;
+  }
+  .ltr{display:inline-block;animation:ltrPop .6s both;text-shadow:0 0 8px currentColor,0 0 22px currentColor;}
+  .subtitle{color:#ffd98a;font-weight:900;font-size:clamp(.75rem,3vw,1.05rem);letter-spacing:3px;text-align:center;margin-top:8px;
+    text-shadow:0 0 12px rgba(255,217,138,.6);}
+  .designed{margin-top:4px;color:#c9a7ff;font-weight:800;font-size:.8rem;letter-spacing:2px;text-align:center;
+    text-shadow:0 0 10px rgba(160,120,255,.55);}
+  .card{
+    background:linear-gradient(160deg,rgba(60,24,100,.92),rgba(28,12,52,.96));
+    border-radius:20px;border:1px solid rgba(160,120,255,.45);padding:18px;
+    box-shadow:0 8px 30px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.05);
+  }
+  .glow-ring{box-shadow:0 0 0 3px rgba(245,197,66,.35),0 0 26px rgba(245,197,66,.35),0 10px 30px rgba(0,0,0,.5);}
+  .fld{text-align:left;}
+  .fld label{font-size:.75rem;font-weight:800;letter-spacing:2px;color:#ffd98a;display:block;margin-bottom:6px;}
+  .fld input{
+    width:100%;padding:13px 15px;border-radius:14px;border:2px solid rgba(245,197,66,.55);outline:none;
+    background:rgba(6,3,22,.7);color:#fff;font-size:1rem;font-weight:800;font-family:'Nunito',sans-serif;
+  }
+  .fld input:focus{border-color:var(--gold2);box-shadow:0 0 15px rgba(245,197,66,.5);}
+  .pop{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:4px;}
+  .gbtn{
+    flex:1;min-width:74px;text-align:center;padding:11px 8px;border:2px solid rgba(255,255,255,.3);border-radius:14px;
+    font-weight:900;color:#fff;cursor:pointer;background:linear-gradient(160deg,#3c1a6e,#210d40);transition:.15s;font-size:.95rem;
+  }
+  .gbtn:active{transform:scale(.96);}
+  .gbtn.sel{transform:scale(1.03);}
+  .gbtn.selA{border-color:#6ec7ff;background:linear-gradient(160deg,#0f4d7a,#0a2c4a);box-shadow:0 0 18px rgba(110,199,255,.5);}
+  .gbtn.selB{border-color:#ffb054;background:linear-gradient(160deg,#8a3a0a,#4a1d02);box-shadow:0 0 18px rgba(255,176,84,.5);}
+  .btn{
+    display:block;width:100%;padding:15px;border:none;border-radius:16px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;
+    font-size:1.02rem;color:#221139;background:linear-gradient(180deg,#ffe27a,#f5b82e);
+    box-shadow:0 6px 0 #a06d0e,0 10px 22px rgba(245,197,66,.3);transition:.12s;letter-spacing:1px;
+  }
+  .btn:active{transform:translateY(5px);box-shadow:0 1px 0 #a06d0e,0 6px 16px rgba(245,197,66,.3);}
+  .btn.big{font-size:1.15rem;padding:17px;}
+  .btn.purple{background:linear-gradient(180deg,#c79aff,#7a3fe0);box-shadow:0 6px 0 #451f86,0 10px 22px rgba(140,90,240,.35);color:#fff;}
+  .btn.green{background:linear-gradient(180deg,#9dff9d,#39c95e);box-shadow:0 6px 0 #18763a,0 10px 22px rgba(57,201,94,.35);color:#08240f;}
+  .mt10{margin-top:12px;}
+  .info-box{margin-top:14px;text-align:left;font-size:.84rem;line-height:1.55;color:#e6d6ff;
+    background:rgba(10,4,32,.55);border:1px dashed rgba(180,140,255,.5);border-radius:14px;padding:12px;}
+  .chip{
+    background:rgba(8,4,28,.75);border:1px solid rgba(180,140,255,.5);color:#cfb5ff;font-weight:800;font-size:.72rem;
+    letter-spacing:1px;padding:6px 12px;border-radius:999px;display:inline-block;white-space:nowrap;
+  }
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin:2px;}
+  .step-chip{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px;}
+  .phase-tag{display:flex;justify-content:center;margin-bottom:12px;}
+  /* ============ phase 1 : order the pieces (past correct) ============ */
+  .p1wrap{max-width:640px;margin:0 auto;text-align:center;}
+  .p1-title{font-family:'Cinzel',serif;font-size:clamp(1.05rem,4.6vw,1.5rem);color:var(--gold2);letter-spacing:1px;
+    text-shadow:0 0 14px rgba(255,223,126,.55);margin-bottom:4px;}
+  .p1-hint{font-size:.8rem;color:#cfb5ff;font-weight:700;margin-bottom:14px;line-height:1.5;}
+  .sen-row{display:flex;align-items:stretch;justify-content:center;gap:clamp(6px,2vw,12px);flex-wrap:wrap;margin-bottom:6px;}
+  .slot{
+    flex:1;min-width:clamp(88px,26vw,150px);min-height:96px;border-radius:16px;padding:8px 10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:900;
+    font-size:clamp(.8rem,3.4vw,1.05rem);
+    border:3px dashed rgba(245,197,66,.75);background:rgba(245,197,66,.10);
+    box-shadow:0 0 14px rgba(245,197,66,.25);
+  }
+  .slot .s-em{font-size:clamp(1.6rem,7vw,2.3rem);line-height:1;}
+  .slot .s-lbl{font-size:.5em;letter-spacing:1px;color:#ffd98a;text-align:center;}
+  .slot .s-word{font-size:1em;letter-spacing:1px;color:#fff;text-transform:uppercase;text-align:center;}
+  .slot.filled{border-style:solid;border-color:rgba(94,224,107,.85);background:rgba(94,224,107,.15);
+    box-shadow:0 0 18px rgba(94,224,107,.4);}
+  .opts{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .tile{
+    min-width:clamp(100px,26vw,170px);padding:13px 14px;border-radius:14px;cursor:pointer;font-family:'Nunito',sans-serif;
+    font-weight:900;font-size:clamp(.9rem,3.6vw,1.1rem);letter-spacing:1px;text-transform:uppercase;
+    background:linear-gradient(165deg,#9d7be8,#5b2fb0);color:#fff;border:2px solid #dcc3ff;
+    box-shadow:0 5px 0 #2a1556,0 8px 18px rgba(150,90,255,.35);transition:transform .12s,box-shadow .12s;
+  }
+  .tile:active{transform:translateY(4px);box-shadow:0 1px 0 #2a1556;}
+  .tile.used{opacity:.35;pointer-events:none;filter:grayscale(1);}
+  .tile.err{animation:shake .45s;border-color:var(--red);box-shadow:0 0 16px rgba(255,107,129,.7);}
+  .fb{min-height:2.5em;font-weight:800;font-size:clamp(.9rem,3.2vw,1.05rem);margin-top:12px;text-align:center;}
+  .fb.good{color:#9dffab;text-shadow:0 0 10px rgba(120,255,150,.6);}
+  .fb.bad{color:#ff9aa8;text-shadow:0 0 10px rgba(255,110,130,.5);}
+  .fb.hint{color:#ffe27a;}
+  .fb .big{font-family:'Cinzel',serif;letter-spacing:1px;}
+  /* ============ memorama ============ */
+  .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:540px;margin:0 auto;}
+  .mem-card{aspect-ratio:.92;border-radius:16px;cursor:pointer;position:relative;perspective:900px;}
+  .mem-face{
+    position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;padding:8px;text-align:center;font-weight:900;
+    -webkit-backface-visibility:hidden;backface-visibility:hidden;transition:transform .45s;
+  }
+  .mem-back{background:radial-gradient(circle at 50% 30%,#3ec95e,#0c5e2e);border:2px solid #8dffb0;
+    font-size:clamp(1.5rem,7vw,2.2rem);box-shadow:0 5px 0 #0a4220;transform:rotateY(0deg);}
+  .mem-back::after{content:'🏕️';position:absolute;top:7px;right:9px;font-size:.85rem;opacity:.85;}
+  .mem-front{background:linear-gradient(165deg,#ffe9a8,#f5b82e);color:#221139;border:2px solid #fff;
+    transform:rotateY(180deg);box-shadow:0 5px 0 #a06d0e;font-size:clamp(.75rem,3.3vw,1rem);letter-spacing:.5px;line-height:1.2;}
+  .mem-card.flip .mem-back{transform:rotateY(180deg);}
+  .mem-card.flip .mem-front{transform:rotateY(0deg);}
+  .mem-card.done .mem-front{background:linear-gradient(165deg,#c6ffd0,#3ec96a);border-color:#2fbf4f;}
+  .mem-card.miss{border:3px solid var(--red);box-shadow:0 0 18px rgba(255,107,129,.7);}
+  /* ============ certificate ============ */
+  .certificate{position:relative;text-align:center;padding:clamp(16px,4vw,28px);border-radius:24px;
+    background:linear-gradient(165deg,#f6e7b8,#e9c969);color:#3a2210;
+    border:6px double #a06d0e;box-shadow:0 0 30px rgba(245,197,66,.5),inset 0 0 40px rgba(160,109,14,.18);}
+  .cert-cell{background:rgba(255,255,255,.55);border:1px solid rgba(160,109,14,.4);border-radius:12px;padding:6px 10px;
+    margin-top:4px;font-weight:800;}
+  .got10{margin-top:12px;font-weight:900;color:#2f7a10;text-shadow:0 0 10px rgba(80,200,60,.35);}
+  .note-shot{margin-top:10px;font-size:.9rem;color:#7a4a10;font-weight:800;border-top:2px dashed rgba(160,109,14,.4);
+    padding-top:10px;line-height:1.5;}
+  .det{margin-top:12px;background:rgba(255,255,255,.55);border:1px solid rgba(160,109,14,.4);border-radius:14px;padding:12px;
+    font-size:.86rem;text-align:left;}
+  .det-row{display:flex;justify-content:space-between;gap:8px;font-weight:700;padding:4px 0;color:#3a2210;}
+  .det-row.last{background:rgba(245,197,66,.4);margin:6px -12px -12px;padding:10px 12px;border-radius:0 0 14px 14px;font-size:1rem;}
+  .det-row .red{color:#c22717;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+  .btn-row .btn{flex:1;min-width:150px;}
+  .overlay{position:fixed;inset:0;background:rgba(6,2,18,.93);z-index:50;display:none;align-items:center;justify-content:center;
+    flex-direction:column;text-align:center;padding:20px;}
+  .overlay.on{display:flex;}
+  .ov-big{font-family:'Cinzel',serif;font-size:clamp(1.7rem,7.5vw,3rem);letter-spacing:3px;color:var(--gold2);
+    text-shadow:0 0 16px rgba(255,223,126,.7),0 0 40px rgba(255,223,126,.4);animation:ltrPop .5s both;}
+  .ov-sub{margin-top:10px;font-weight:800;font-size:clamp(.9rem,3.6vw,1.15rem);color:#c9a7ff;animation:fadeIn .5s .2s both;}
+  .ov-emoji{font-size:clamp(3rem,14vw,4.5rem);animation:floaty 2s ease-in-out infinite;}
+  .fab{position:fixed;bottom:16px;right:16px;z-index:60;width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;
+    background:linear-gradient(180deg,#c79aff,#7a3fe0);color:#fff;font-size:1.4rem;box-shadow:0 6px 0 #451f86,0 12px 26px rgba(0,0,0,.5);}
+  .fab:active{transform:translateY(4px);box-shadow:0 2px 0 #451f86;}
+</style>
+</head>
+<body>
+
+<div class="sky">
+  <div class="moon" id="moon"></div>
+  <div id="stars"></div>
+  <div id="parts"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ START ============ -->
+  <section id="screen-start" class="screen on center">
+    <div class="titles">
+      <h1 class="h-title" id="rainbowTitle"></h1>
+      <div class="subtitle">⚡ BY TEACHER LIZBETH GARAY ⚡</div>
+      <div class="designed">🧙‍♀️ DESIGNED FOR 5TH GRADE ✨</div>
+    </div>
+    <div style="font-size:clamp(2.6rem,10vw,4.4rem);margin:6px 0 2px;">🏕️</div>
+    <div class="card glow-ring mt10" style="max-width:520px;margin:0 auto;">
+      <div class="fld">
+        <label>🔮 NOMBRE DEL MAGO O BRUJA</label>
+        <input id="inpName" type="text" maxlength="28" placeholder="Escribe tu nombre..." autocomplete="off">
+      </div>
+      <div class="fld" style="margin-top:12px;">
+        <label>🎓 GRADO</label>
+        <div class="cert-cell" style="background:rgba(120,60,190,.25);border:1px solid rgba(180,140,255,.5);color:#fff;text-align:center;padding:11px;">
+          🧙‍♀️ 5.º DE PRIMARIA
+        </div>
+      </div>
+      <div class="fld" style="margin-top:12px;">
+        <label>🏰 ELIGE TU GRUPO</label>
+        <div class="pop">
+          <div class="gbtn" id="gA" onclick="setGroup('A')">GRUPO A</div>
+          <div class="gbtn" id="gB" onclick="setGroup('B')">GRUPO B</div>
+        </div>
+      </div>
+      <button class="btn big mt10" onclick="startGame()">🪄 COMENZAR AVENTURA</button>
+      <div class="info-box">
+        <b>¿CÓMO JUGAR?</b><br>
+        🏕️ <b>Fase 1:</b> Toca las <b>piezas de la oración en orden</b> para armarla: <b>SUJETO → VERBO EN PASADO → COMPLEMENTO</b>. Ej. <i>They ___ a shelter</i> → toca THEY, luego <b>BUILT</b> (no BUILD), luego A SHELTER.<br>
+        ⚠️ <b>Cuidado:</b> el verbo en <b>PRESENTE</b> nunca se coloca: solo el <b>PASADO</b> es correcto.<br>
+        🔁 <b>Fase 2 (refuerzo, NO cuenta):</b> Voltea las cartas y forma las <b>parejas de verbos: pasado ↔ presente</b> (BUILT ↔ BUILD, WENT ↔ GO...).<br>
+        💥 A partir del <b>2.º error</b> tu calificación empieza a bajar. ⛔ Solo <b>3 errores</b>; el <b>4.º error reinicia el juego</b>.<br>
+        🏆 Al final recibirás tu <b>calificación</b> (mínimo 6, máximo 10).
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHASE 1 : choose the past ============ -->
+  <section id="screen-p1" class="screen">
+    <div class="step-chip">
+      <span class="chip">🧙 <b id="pWho">MAGO</b></span>
+      <span class="chip">🏆 <b id="p1ok">0</b>/16</span>
+      <span class="chip">⚠️ Errores: <b id="p1err">0</b></span>
+      <span class="chip">⭐ <b id="p1pts">0</b> pts</span>
+    </div>
+    <div class="phase-tag"><span class="chip" style="font-family:'Cinzel',serif;letter-spacing:1px;">FASE 1 — ¡ELIGE EL PASADO! ⏪</span></div>
+    <div class="p1wrap">
+      <div class="card">
+        <div class="p1-title">Arma la oración tocando las piezas en orden</div>
+        <div class="p1-hint">Orden: SUJETO → VERBO EN PASADO → COMPLEMENTO 👇</div>
+        <div class="sen-row" id="senRow"></div>
+        <div class="opts" id="opts"></div>
+        <div class="fb" id="fb1">⏪ Elige la forma en PASADO del verbo.</div>
+        <div style="text-align:center;margin-top:10px;" id="p1dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PHASE 2 : memorama ============ -->
+  <section id="screen-memo" class="screen">
+    <div class="step-chip">
+      <span class="chip">🧙 <b id="mWho">MAGO</b></span>
+      <span class="chip">🏆 <b id="mOk">0</b>/16</span>
+      <span class="chip">⚠️ Errores: <b id="mErr">0</b></span>
+      <span class="chip">👆 Toques: <b id="memTurn">0</b></span>
+    </div>
+    <div class="phase-tag"><span class="chip" style="font-family:'Cinzel',serif;letter-spacing:1px;">FASE 2 — MEMORAMA DE VERBOS 🔁</span></div>
+    <div class="mem-grid" id="memGrid"></div>
+    <div class="fb" id="fbMemo">🔁 Voltea las cartas: forma las parejas pasado ↔ presente.</div>
+    <button class="btn green big mt10" id="btnReport" style="display:none;" onclick="showReport()">📜 VER MI CALIFICACIÓN</button>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="screen-result" class="screen">
+    <div class="certificate">
+      <div style="font-size:2rem;">🏕️</div>
+      <div style="font-family:'Cinzel',serif;font-weight:900;letter-spacing:2px;font-size:clamp(1rem,4vw,1.3rem);">ADVENTURE CAMP</div>
+      <div style="font-size:.78rem;font-weight:800;letter-spacing:2px;color:#8a5a16;">BY TEACHER LIZBETH GARAY</div>
+      <div class="cert-cell" id="cName"></div>
+      <div class="cert-cell" id="cGrade"></div>
+      <div style="font-size:clamp(3rem,14vw,4.4rem);margin-top:8px;font-weight:900;color:#a06d0e;" id="cScore"></div>
+      <div id="cDet"></div>
+      <div id="cExtra"></div>
+      <div id="cShot"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="playAgain()">🔁 JUGAR DE NUEVO</button>
+      <button class="btn purple" onclick="goStart()">👥 OTRO MAGO</button>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="ovPhase">
+  <div class="ov-emoji">🏕️✨</div>
+  <div class="ov-big" id="ovBig">¡FASE 1!</div>
+  <div class="ov-sub" id="ovSub">Elige el verbo en PASADO.</div>
+</div>
+
+<button class="fab" onclick="toggleAudio()" id="fabSound" title="Sonido">🔊</button>
+
+<script>
+'use strict';
+/* ============================================================
+   ADVENTURE CAMP — by Teacher Lizbeth Garay
+   Fase 1: elige la forma en PASADO   |   Fase 2: memorama pasado ↔ presente
+   5.º de primaria · min 6, max 10 · 4.º error reinicia
+   ============================================================ */
+
+var RAINBOW=['#ff5a5a','#ff9a3d','#ffe23d','#5fe85f','#43c9ff','#7c6bff','#ff5fd0','#ff4f8f'];
+function $(id){ return document.getElementById(id); }
+function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function clamp(v,mi,ma){ return Math.max(mi,Math.min(ma,v)); }
+function fmt(sec){ sec=Math.max(0,Math.round(sec||0)); var m=Math.floor(sec/60); var s=sec%60; return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
+
+function rainbowTitle(){
+  var t='ADVENTURE CAMP', h='';
+  for(var i=0;i<t.length;i++){
+    var ch=t[i];
+    if(ch===' '){ h+=' '; continue; }
+    var c=RAINBOW[i%RAINBOW.length];
+    h+='<span class="ltr" style="animation-delay:'+(i*0.05)+'s;color:'+c+';text-shadow:0 0 10px '+c+',0 0 26px '+c+',0 0 46px '+c+';">'+ch+'</span>';
+  }
+  $('rainbowTitle').innerHTML=h;
+}
+
+/* ---------- audio ---------- */
+var A={on:true,ctx:null};
+function ac(){ if(A.on && !A.ctx){ try{ A.ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return A.ctx; }
+function beep(f,d,t,vol,delay){
+  if(!A.on) return;
+  var c=ac(); if(!c) return;
+  try{
+    var o=c.createOscillator(),g=c.createGain();
+    o.type=t||'triangle'; o.frequency.value=f;
+    var t0=c.currentTime+(delay||0);
+    g.gain.setValueAtTime(vol||0.16,t0);
+    g.gain.linearRampToValueAtTime(0.0001,t0+d);
+    o.connect(g); g.connect(c.destination);
+    o.start(t0); o.stop(t0+d+0.02);
+  }catch(e){}
+}
+function sCor(){ beep(523,.12,'triangle',.16); beep(784,.2,'triangle',.16,.11); }
+function sWro(){ beep(196,.22,'sine',.2); beep(147,.28,'sine',.18,.15); }
+function sPha(){ [392,523,659,784].forEach(function(f,i){ beep(f,.18,'triangle',.16,i*.1); }); }
+function sTap(){ beep(440,.09,'triangle',.14); }
+function toggleAudio(){ A.on=!A.on; $('fabSound').textContent=A.on?'🔊':'🔇'; if(A.on){ ac(); beep(660,.1,'triangle',.14); } }
+function skyResize(){
+  var p=$('parts'); p.innerHTML='';
+  var pr='';
+  for(var i=0;i<14;i++){ pr+='<span class="witch" style="top:'+(Math.random()*60)+'%;--dur:'+(10+Math.random()*12)+'s;animation-delay:-'+(Math.random()*14)+'s">'+(Math.random()<.5?'🧙‍♀️':'🧙‍♂️')+'</span>'; }
+  for(var j=0;j<12;j++){ pr+='<span class="fire" style="left:'+(Math.random()*100)+'%;bottom:'+(Math.random()*12)+'%;--dur:'+(2+Math.random()*2.4)+'s">🔥</span>'; }
+  for(var k=0;k<10;k++){ pr+='<span class="wand" style="left:'+(Math.random()*100)+'%;top:'+(Math.random()*80)+'%;--dur:'+(2+Math.random()*3)+'s">🪄</span>'; }
+  p.innerHTML=pr;
+  var st=$('stars'); st.innerHTML='';
+  for(var m=0;m<60;m++){ var s=document.createElement('span'); s.className='star';
+    s.style.left=(Math.random()*100)+'%'; s.style.top=(Math.random()*100)+'%';
+    s.style.width=s.style.height=(Math.random()*2.6+1)+'px'; s.style.setProperty('--dur',(1.4+Math.random()*2.8)+'s');
+    s.style.animationDelay=(-Math.random()*3)+'s'; st.appendChild(s); }
+}
+
+/* ---------- data ---------- */
+var PEN=[1,0.75,0.5,0.3,0.2];
+var MAX_ERR=3;
+
+/* Fase 1: sentences - past is correct */
+var SENT=[
+  {sub:'👧👦', su:'THEY', phr:'a shelter',        pe:'🛖',     pres:'build', past:'built'},
+  {sub:'🧙‍♀️🧙', su:'WE',   phr:'hiking',            pe:'🥾⛰️',   pres:'go',    past:'went'},
+  {sub:'👦',   su:'HE',   phr:'on a campfire',     pe:'🔥🍖',   pres:'cook',  past:'cooked'},
+  {sub:'👧',   su:'SHE',  phr:'a zipline',         pe:'🪂🏞️',   pres:'ride',  past:'rode'},
+  {sub:'👧',   su:'SHE',  phr:'horseback riding',  pe:'🐴🌵',   pres:'go',    past:'went'},
+  {sub:'👧👦', su:'THEY', phr:'in a tent',         pe:'⛺🌙',   pres:'sleep', past:'slept'},
+  {sub:'👦',   su:'HE',   phr:'mountain biking',   pe:'🚵⛰️',   pres:'go',    past:'went'},
+  {sub:'🧙',   su:'I',    phr:'canoeing',          pe:'🛶💧',   pres:'go',    past:'went'},
+  {sub:'👧',   su:'SHE',  phr:'on a trampoline',   pe:'🤸🌳',   pres:'jump',  past:'jumped'},
+  {sub:'👧',   su:'SHE',  phr:'climbing',          pe:'🧗🪨',   pres:'go',    past:'went'},
+  {sub:'👧👦', su:'THEY', phr:'table tennis',      pe:'🏓⚪',   pres:'play',  past:'played'},
+  {sub:'👦',   su:'HE',   phr:'badminton',         pe:'🏸🪶',   pres:'play',  past:'played'},
+  {sub:'👧',   su:'SHE',  phr:'volleyball',        pe:'🏐🌐',   pres:'play',  past:'played'},
+  {sub:'🧙‍♀️🧙', su:'WE',   phr:'jewelry',           pe:'💍📿',   pres:'make',  past:'made'},
+  {sub:'🧙‍♀️🧙', su:'WE',   phr:'ice skating',       pe:'⛸️❄️',   pres:'go',    past:'went'},
+  {sub:'🤷',   su:'YOU',  phr:'bowling',           pe:'🎳',     pres:'go',    past:'went'}
+];
+
+/* Fase 2: past ↔ present pairs */
+var VERBS=[['build','built'],['go','went'],['cook','cooked'],['ride','rode'],
+           ['sleep','slept'],['play','played'],['make','made'],['jump','jumped']];
+
+/* ---------- state ---------- */
+var ST={idx:0,ok:0,pts:0,errs:0,fails:0,orderS:[],cur:null,opt:[],locked:false,
+        name:'',group:'',grade:'5.º',attempt:1,startTs:0,p2pts:0,
+        memo:{turns:0,left:8,open:[],busy:false,pairFails:0}};
+
+function setGroup(g){
+  ST.group=g;
+  $('gA').classList.remove('sel','selA'); $('gB').classList.remove('sel','selB');
+  var el=g==='A'?$('gA'):$('gB');
+  el.classList.add('sel', g==='A'?'selA':'selB');
+}
+
+/* ---------- flows ---------- */
+function startGame(){
+  var name=$('inpName').value.trim();
+  if(!name){ alert('🧙 Escribe tu nombre para comenzar.'); $('inpName').focus(); return; }
+  if(!ST.group){ alert('🏰 Elige tu grupo (A o B).'); return; }
+  ST.name=name;
+  ST.startTs=Date.now();
+  $('pWho').textContent=ST.name;
+  $('mWho').textContent=ST.name;
+  resetRound();
+  showOverlay('¡FASE 1!','Elige el verbo en PASADO (PAST): es el correcto.',function(){
+    hide('screen-start');
+    show('screen-p1'); nextQ();
+  });
+}
+function resetRound(){
+  ST.idx=0; ST.ok=0; ST.pts=0; ST.errs=0; ST.p2pts=0;
+  ST.orderS=shuffle(SENT);
+}
+function playAgain(){
+  ST.attempt++;
+  ST.startTs=Date.now();
+  resetRound();
+  show('screen-p1'); hide('screen-result'); hide('screen-memo');
+  nextQ();
+}
+function restartOnErrors(){
+  ST.attempt++;
+  resetRound();
+  showOverlay('¡REINICIO!','Los errores se reinician. ¡Concéntrate, mago!',function(){
+    hide('screen-start'); hide('screen-memo'); hide('screen-result');
+    show('screen-p1'); nextQ();
+  });
+}
+function goStart(){
+  ST.attempt=1;
+  show('screen-start'); hide('screen-p1'); hide('screen-memo'); hide('screen-result');
+  $('inpName').focus();
+}
+
+/* ---------- phase 1 ---------- */
+function renderChips(){
+  $('p1ok').textContent=ST.ok;
+  $('p1err').textContent=ST.errs;
+  $('p1pts').textContent=Math.round(ST.pts*10)/10;
+}
+function nextQ(){
+  if(ST.idx>=SENT.length){ goMemo(); return; }
+  ST.cur=ST.orderS[ST.idx];
+  ST.fails=0; ST.locked=false;
+  renderChips();
+  $('fb1').className='fb';
+  $('fb1').textContent='⏪ Toca las piezas en el orden correcto para armar la oración (el verbo va en PASADO).';
+  renderQ();
+}
+function renderQ(){
+  var row=$('senRow');
+  row.innerHTML=
+    '<div class="slot" id="slot0"><span class="s-em">'+ST.cur.sub+'</span><span class="s-lbl">¿SUJETO?</span><span class="s-word" id="slotw0"></span></div>'+
+    '<div class="slot" id="slot1"><span class="s-em">⏳</span><span class="s-lbl">¿VERBO EN PASADO?</span><span class="s-word" id="slotw1"></span></div>'+
+    '<div class="slot" id="slot2"><span class="s-em">'+ST.cur.pe+'</span><span class="s-lbl">¿COMPLEMENTO?</span><span class="s-word" id="slotw2"></span></div>';
+  ST.tiles=shuffle([{w:ST.cur.su},{w:ST.cur.past},{w:ST.cur.pres},{w:ST.cur.phr}]);
+  ST.tileUsed=[false,false,false,false];
+  ST.slot=0;
+  var o=$('opts'), h='';
+  for(var i=0;i<ST.tiles.length;i++){
+    h+='<button class="tile" id="tl_'+i+'" onclick="tileClick('+i+')">'+ST.tiles[i].w+'</button>';
+  }
+  o.innerHTML=h;
+  var dots=$('p1dots'), ds='';
+  for(var n=0;n<SENT.length;n++){
+    var col= n<ST.idx ? '#5ee06b' : (n===ST.idx ? '#ffdf7e' : 'rgba(255,255,255,.25)');
+    ds+='<span class="dot" style="background:'+col+';box-shadow:0 0 8px '+col+'"></span>';
+  }
+  dots.innerHTML=ds;
+}
+function tileClick(i){
+  if(ST.locked) return;
+  var el=$('tl_'+i);
+  if(ST.tileUsed[i]) return;
+  var fb=$('fb1');
+  var exp= ST.slot===0 ? ST.cur.su : (ST.slot===1 ? ST.cur.past : ST.cur.phr);
+  if(ST.tiles[i].w.toLowerCase()===exp.toLowerCase()){
+    $('slotw'+ST.slot).textContent=ST.tiles[i].w.toUpperCase();
+    $('slot'+ST.slot).classList.add('filled');
+    ST.tileUsed[i]=true;
+    el.classList.add('used'); el.setAttribute('disabled','disabled');
+    ST.slot++;
+    if(ST.slot>=3){
+      ST.locked=true;
+      ST.ok++; ST.pts+=PEN[Math.min(ST.fails,PEN.length-1)]; sCor();
+      renderChips();
+      var errTxt=ST.fails>0?' ('+ST.fails+' error(es), se restó penalización)':' (a la primera 👍)';
+      fb.className='fb good';
+      fb.innerHTML='✅ ¡Oración completa! <span class="big">'+ST.cur.su+' '+ST.cur.past.toUpperCase()+' '+ST.cur.phr.toUpperCase()+'</span><br>+'+PEN[Math.min(ST.fails,PEN.length-1)]+' pt'+errTxt;
+      setTimeout(function(){ ST.idx++; nextQ(); },1400);
+    }else{
+      fb.className='fb';
+      fb.textContent='✏️ ¡Bien! Coloca la siguiente pieza.';
+    }
+  }else{
+    ST.fails++; ST.errs++; sWro();
+    renderChips();
+    el.classList.add('err');
+    var badTxt= ST.slot===1 ? '❌ '+ST.tiles[i].w.toUpperCase()+' NO es la forma en PASADO del verbo. Elige la de atrás (PAST).'
+      : '❌ Esa pieza no va en este lugar de la oración.';
+    if(ST.errs>=MAX_ERR+1){
+      ST.locked=true;
+      fb.className='fb hint';
+      fb.innerHTML='⛔ ¡Oh no! Ese era el '+MAX_ERR+'.º error permitido.<br>🔄 El juego se reinicia...';
+      setTimeout(function(){ restartOnErrors(); },1900);
+      return;
+    }
+    fb.className='fb bad';
+    fb.textContent=badTxt;
+  }
+}
+
+/* ---------- phase 2 : memorama ---------- */
+function goMemo(){
+  ST.memo.turns=0; ST.memo.left=8; ST.memo.open=[]; ST.memo.busy=false; ST.memo.pairFails=0;
+  $('mOk').textContent=ST.ok;
+  $('mErr').textContent=ST.errs;
+  $('btnReport').style.display='none';
+  $('memTurn').textContent=0;
+  $('fbMemo').className='fb';
+  $('fbMemo').textContent='🔁 Voltea las cartas: forma las parejas pasado ↔ presente.';
+  sPha();
+  show('screen-memo'); hide('screen-p1');
+  showOverlay('¡FASE 2!','Memorama: junta cada PASADO con su PRESENTE.',function(){
+    var cards=[];
+    for(var i=0;i<VERBS.length;i++){
+      cards.push({k:i,val:VERBS[i][1],tag:'PAST'});
+      cards.push({k:i,val:VERBS[i][0],tag:'PRESENT'});
+    }
+    cards=shuffle(cards);
+    var grid=$('memGrid'); grid.innerHTML='';
+    for(var j=0;j<cards.length;j++){
+      (function(card,ci){
+        var cd=document.createElement('div');
+        cd.className='mem-card';
+        cd.id='memc_'+ci;
+        cd.innerHTML='<div class="mem-in"><div class="mem-face mem-back">❔</div>'+
+          '<div class="mem-face mem-front">'+card.val.toUpperCase()+'</div></div>';
+        cd.addEventListener('click',function(){ memoFlip(card,cd); });
+        grid.appendChild(cd);
+      })(cards[j],j);
+    }
+  });
+}
+function memoFlip(card,el){
+  if(ST.memo.busy || ST.memo.lock) return;
+  if(el.classList.contains('flip')) return;
+  ST.memo.turns++;
+  $('memTurn').textContent=ST.memo.turns;
+  el.classList.add('flip');
+  ST.memo.open.push({card:card,el:el});
+  sTap();
+  if(ST.memo.open.length===2){
+    ST.memo.busy=true;
+    var a=ST.memo.open[0], b=ST.memo.open[1];
+    if(a.card.k===b.card.k){
+      ST.memo.left--;
+      a.el.classList.add('done'); b.el.classList.add('done');
+      ST.memo.open=[];
+      ST.memo.busy=false;
+      var pts=PEN[Math.min(ST.memo.pairFails,PEN.length-1)];
+      ST.p2pts+=pts;
+      ST.memo.pairFails=0;
+      // by now the whole game uses p1pts chip; update it too
+      renderChips();
+      var f=$('fbMemo');
+      if(ST.memo.left===0){
+        sPha();
+        f.className='fb good';
+        f.textContent='🎉 ¡MEMORAMA COMPLETO en '+ST.memo.turns+' toques! 🏕️ Buen refuerzo.'
+        $('btnReport').style.display='block';
+      }else{
+        f.className='fb';
+        f.textContent='💚 ¡Pareja '+a.card.val.toUpperCase()+' ↔ '+b.card.val.toUpperCase()+'! (+'+pts+' pt)';
+      }
+    }else{
+      setTimeout(function(){
+        a.el.classList.remove('flip'); b.el.classList.remove('flip');
+        ST.memo.open=[];
+        ST.memo.busy=false;
+        ST.memo.pairFails++;
+        var f=$('fbMemo'); f.className='fb';
+        f.textContent='💔 No son pareja. Sigue intentando. Toques: '+ST.memo.turns;
+      },750);
+    }
+  }
+}
+
+/* ---------- report ---------- */
+function showReport(){
+  var timeSecs=Math.round((Date.now()-ST.startTs)/1000);
+  var p1s=ST.ok/SENT.length*10;
+  var memoPares=ST.memo.left; /* 0 completado */
+  var penal= ST.errs>=2 ? (ST.errs-1) : 0;
+  var raw=p1s-penal;
+  var grade=clamp(Math.round(raw),6,10);
+  $('cName').innerHTML='🧙 '+ST.name.replace(/</g,'&lt;');
+  $('cGrade').innerHTML='🎓 GRADO <b>'+ST.grade+'</b> &nbsp;|&nbsp; 🏰 GRUPO <b>'+ST.group+'</b> &nbsp;|&nbsp; 🔄 Intento <b>'+ST.attempt+'</b>';
+  $('cScore').innerHTML=grade+' <span style="font-size:.4em;">/ 10</span>';
+  $('cDet').innerHTML='<div class="det">📋 <b>DETALLE</b>'+
+    '<div class="det-row"><span>Fase 1 · Elegir el pasado</span><span>'+ST.ok+'/'+SENT.length+' aciertos → <b>'+p1s.toFixed(1)+'/10</b></span></div>'+
+    '<div class="det-row"><span>Fase 2 · Memorama (no cuenta)</span><span>'+ST.p2pts.toFixed(1)+'/'+VERBS.length+' parejas → <b>SOLO REFUERZO</b></span></div>'+
+    '<div class="det-row"><span>Errores (Fase 1)</span><span class="red">'+ST.errs+' · –'+penal+' pts</span></div>'+
+    '<div class="det-row"><span>Nota redondeada (entera)</span><span><b>'+grade+'</b></span></div>'+
+    '<div class="det-row last"><span>CALIFICACIÓN OFICIAL (mín. 6)</span><span><b>'+grade+' / 10</b></span></div></div>';
+  $('cExtra').innerHTML='';
+  $('cShot').innerHTML= grade===10
+    ? '<div class="note-shot">🏆 ¡LO LOGRASTE! Toma una <b>captura de pantalla</b> de tu reporte y compártela con tu <b>GRUPO DE INGLÉS</b>. ¡Eres una estrella mágica! ✨</div>'
+    : '<div class="note-shot">💪 ¡Buen intento! Repasa los PASADOS: built, went, cooked, rode, slept, played, made, jumped... ¡y vuelve a intentar hasta el 10! ⚡</div>';
+  show('screen-result'); hide('screen-memo'); hide('screen-p1');
+  sPha();
+}
+
+/* ---------- helpers ---------- */
+function show(id){ $(id).classList.add('on'); }
+function hide(id){ $(id).classList.remove('on'); }
+function showOverlay(big,sub,cb){
+  $('ovBig').textContent=big;
+  $('ovSub').textContent=sub;
+  $('ovPhase').classList.add('on');
+  setTimeout(function(){ $('ovPhase').classList.remove('on'); if(cb) cb(); },1900);
+}
+
+/* ---------- events ---------- */
+$('inpName').addEventListener('keydown',function(e){ if(e.key==='Enter') startGame(); });
+window.addEventListener('resize',skyResize);
+
+/* ---------- boot ---------- */
+(function init(){
+  rainbowTitle();
+  var m=$('moon'); var cr='';
+  for(var i=0;i<3;i++){ cr+='<span class="crater" style="width:'+(8+i*3)+'px;height:'+(8+i*3)+'px;left:'+(20+i*18)+'%;top:'+(25+i*20)+'%"></span>'; }
+  m.innerHTML=cr;
+  skyResize();
+  $('pWho').textContent='—';
+})();
+</script>
+</body>
+</html>
